@@ -1,0 +1,95 @@
+%{
+int yylex(void);
+void yyerror(char *);
+int hexaToDec(char hexVal[]) 
+{    
+    int len = strlen(hexVal); 
+    int base = 1; 
+    int dec_val = 0;  
+    for (int i=len-1; i>=0; i--) 
+    {     
+        if (hexVal[i]>='0' && hexVal[i]<='9') 
+        { 
+            dec_val += (hexVal[i] - 48)*base; 
+            base = base * 16; 
+        } 
+        else if (hexVal[i]>='A' && hexVal[i]<='F') 
+        { 
+            dec_val += (hexVal[i] - 55)*base;
+            base = base*16; 
+        } 
+    }   
+    return dec_val; 
+} 
+char decToHexa(int n) 
+{     
+    char hexaDeciNum[100];
+    char value[100]; 
+    int i = 0; 
+    while(n!=0) 
+    {     
+        int temp  = 0; 
+        temp = n % 16; 
+        if(temp < 10) 
+        { 
+            hexaDeciNum[i] = temp + 48; 
+            i++; 
+        } 
+        else
+        { 
+            hexaDeciNum[i] = temp + 55; 
+            i++; 
+        } 
+        n = n/16; 
+    } 
+   return hexaDecinum;
+} 
+char addition(HEXNO a,HEXNO b){
+	int result=hexaToDec(a) + hexaToDec(b);
+	return decToHexa(result);
+}
+char subtraction(HEXNO a,HEXNO b){
+	int result=hexaToDec(a) - hexaToDec(b);
+	return decToHexa(result);
+}
+char multiplication(HEXNO a,HEXNO b){
+	int result=hexaToDec(a) * hexaToDec(b);
+	return decToHexa(result);
+}
+char division(HEXNO a,HEXNO b){
+	int result=hexaToDec(a) / hexaToDec(b);
+	return decToHexa(result);
+}
+%}
+
+%left '-''+'
+%left '*''/'
+%token HEXNO
+
+%%
+S:E	{printf("%d",$1);}
+
+E:E '+' T	{$$=addition($1,$3);}
+  |E '-' T	{$$=subtraction($1,$3);}
+  |T		{$$=$1;}
+  ;
+
+T:T '*' F	{$$=multiplication($1,$3);}
+  |T '/' F	{$$=division($1,$3);}
+  |F		{$$=$1;}
+
+F:E		{$$=$1;}
+  |HEXNO	{$$=$1;}
+  ;
+%%
+
+int main(void){
+ 	while(1){
+		yyparse();
+	}
+	return 0;
+}
+
+void yyerror(){
+	printf("\n Invalid \n");
+}

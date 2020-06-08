@@ -1,0 +1,16 @@
+%{
+void yyerror(char *);
+#include "y.tab.h"
+extern int yyval;
+%}
+
+%%
+[0-9A-F]+	{yyval=yytext;
+		 return HEXNO;}
+[-+\n]		{;}
+.		yyerror("INVALID");
+%%
+
+int yywrap(void){
+	return 1;
+}
